@@ -6,7 +6,7 @@ setup(
   description = 'A simple Python API to BlueKai APIs',
   author = 'Graham Thomson',
   author_email = 'grahamflemingthomson@gmail.com',
-  url = 'https://github.com/graham-thomson/bluekai_api',
-  download_url = 'https://github.com/graham-thomson/bluekai_api/archive/master.zip',
+  url = 'https://github.com/eduardosi25/bluekaiconnector',
+  download_url = 'https://github.com/eduardosi25/bluekaiconnector',
   keywords = ['bluekai', 'api', 'categories', 'rules']
 )
