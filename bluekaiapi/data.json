@@ -1,0 +1,607 @@
+{
+  "audiences" : [ {
+    "owner" : {
+      "id" : 3740,
+      "name" : "CASA EDITORIAL EL TIEMPO S A DMP"
+    },
+    "campaigns" : [ ],
+    "price" : null,
+    "idTypes" : [ {
+      "id" : 1,
+      "name" : "BlueKai 3rd Party Desktop Cookie ID",
+      "device_group" : "DESKTOP",
+      "context_group" : "WEB"
+    }, {
+      "id" : 3,
+      "name" : "BlueKai Mobile Cookie ID",
+      "device_group" : "MOBILE",
+      "context_group" : "WEB"
+    }, {
+      "id" : 6,
+      "name" : "Google Advertising ID (AdID)",
+      "device_group" : "MOBILE",
+      "context_group" : "APP"
+    }, {
+      "id" : 9,
+      "name" : "Apple IDFA",
+      "device_group" : "MOBILE",
+      "context_group" : "APP"
+    } ],
+    "recency" : 7,
+    "retargeting" : true,
+    "prospecting" : true,
+    "reach" : 0,
+    "notes" : "",
+    "countryCodes" : [ "CO" ],
+    "segments" : {
+    },
+    "idPackages" : [ {
+      "id" : 1,
+      "name" : "Oracle ID Graph",
+      "partner" : {
+        "id" : 0
+      },
+      "description" : "Oracle ID Graph package",
+      "id_linkages" : [ {
+        "id" : 1,
+        "source" : {
+          "id" : 1
+        },
+        "provider" : {
+          "id" : 1
+        },
+        "destination" : {
+          "id" : 1
+        },
+        "isBidirectional" : true,
+        "description" : "bkuuid -> bkuuid",
+        "status" : "active"
+      }, {
+        "id" : 2,
+        "source" : {
+          "id" : 1
+        },
+        "provider" : {
+          "id" : 1
+        },
+        "destination" : {
+          "id" : 3
+        },
+        "isBidirectional" : true,
+        "description" : "bkuuid -> bkmobileid",
+        "status" : "active"
+      }, {
+        "id" : 3,
+        "source" : {
+          "id" : 3
+        },
+        "provider" : {
+          "id" : 1
+        },
+        "destination" : {
+          "id" : 3
+        },
+        "isBidirectional" : true,
+        "description" : "bkmobileid -> bkmobileid",
+        "status" : "active"
+      }, {
+        "id" : 4,
+        "source" : {
+          "id" : 1
+        },
+        "provider" : {
+          "id" : 1
+        },
+        "destination" : {
+          "id" : 9
+        },
+        "isBidirectional" : true,
+        "description" : "bkuuid -> idfa",
+        "status" : "active"
+      }, {
+        "id" : 5,
+        "source" : {
+          "id" : 3
+        },
+        "provider" : {
+          "id" : 1
+        },
+        "destination" : {
+          "id" : 9
+        },
+        "isBidirectional" : true,
+        "description" : "bkmobileid -> idfa",
+        "status" : "active"
+      }, {
+        "id" : 6,
+        "source" : {
+          "id" : 1
+        },
+        "provider" : {
+          "id" : 1
+        },
+        "destination" : {
+          "id" : 6
+        },
+        "isBidirectional" : true,
+        "description" : "bkuuid -> adid",
+        "status" : "active"
+      }, {
+        "id" : 7,
+        "source" : {
+          "id" : 3
+        },
+        "provider" : {
+          "id" : 1
+        },
+        "destination" : {
+          "id" : 6
+        },
+        "isBidirectional" : true,
+        "description" : "bkmobileid -> adid",
+        "status" : "active"
+      }, {
+        "id" : 8,
+        "source" : {
+          "id" : 9
+        },
+        "provider" : {
+          "id" : 1
+        },
+        "destination" : {
+          "id" : 9
+        },
+        "isBidirectional" : true,
+        "description" : "idfa -> idfa",
+        "status" : "active"
+      }, {
+        "id" : 9,
+        "source" : {
+          "id" : 9
+        },
+        "provider" : {
+          "id" : 1
+        },
+        "destination" : {
+          "id" : 6
+        },
+        "isBidirectional" : true,
+        "description" : "idfa -> adid",
+        "status" : "active"
+      }, {
+        "id" : 10,
+        "source" : {
+          "id" : 6
+        },
+        "provider" : {
+          "id" : 1
+        },
+        "destination" : {
+          "id" : 6
+        },
+        "isBidirectional" : true,
+        "description" : "adid -> adid",
+        "status" : "active"
+      }, {
+        "id" : 11,
+        "source" : {
+          "id" : 1
+        },
+        "provider" : {
+          "id" : 1
+        },
+        "destination" : {
+          "id" : 34
+        },
+        "isBidirectional" : true,
+        "description" : "bkuuid -> appnexus",
+        "status" : "active"
+      }, {
+        "id" : 12,
+        "source" : {
+          "id" : 1
+        },
+        "provider" : {
+          "id" : 1
+        },
+        "destination" : {
+          "id" : 22
+        },
+        "isBidirectional" : true,
+        "description" : "bkuuid -> naid",
+        "status" : "active"
+      }, {
+        "id" : 13,
+        "source" : {
+          "id" : 3
+        },
+        "provider" : {
+          "id" : 1
+        },
+        "destination" : {
+          "id" : 34
+        },
+        "isBidirectional" : true,
+        "description" : "bkmobileid -> appnexus",
+        "status" : "active"
+      }, {
+        "id" : 14,
+        "source" : {
+          "id" : 3
+        },
+        "provider" : {
+          "id" : 1
+        },
+        "destination" : {
+          "id" : 22
+        },
+        "isBidirectional" : true,
+        "description" : "bkmobileid -> naid",
+        "status" : "active"
+      }, {
+        "id" : 15,
+        "source" : {
+          "id" : 9
+        },
+        "provider" : {
+          "id" : 1
+        },
+        "destination" : {
+          "id" : 22
+        },
+        "isBidirectional" : true,
+        "description" : "idfa -> naid",
+        "status" : "active"
+      }, {
+        "id" : 16,
+        "source" : {
+          "id" : 6
+        },
+        "provider" : {
+          "id" : 1
+        },
+        "destination" : {
+          "id" : 22
+        },
+        "isBidirectional" : true,
+        "description" : "adid -> naid",
+        "status" : "active"
+      }, {
+        "id" : 17,
+        "source" : {
+          "id" : 9
+        },
+        "provider" : {
+          "id" : 1
+        },
+        "destination" : {
+          "id" : 34
+        },
+        "isBidirectional" : true,
+        "description" : "idfa -> appnexus",
+        "status" : "active"
+      }, {
+        "id" : 18,
+        "source" : {
+          "id" : 6
+        },
+        "provider" : {
+          "id" : 1
+        },
+        "destination" : {
+          "id" : 34
+        },
+        "isBidirectional" : true,
+        "description" : "adid -> appnexus",
+        "status" : "active"
+      } ],
+      "countries" : [ {
+        "id" : 1,
+        "code" : "US",
+        "name" : "United States",
+        "category" : {
+          "id" : 408098
+        },
+        "isHidden" : false,
+        "createdAt" : 1379460609000,
+        "updatedAt" : 1595572035000,
+        "status" : "active",
+        "lookalikeAccepted" : true
+      }, {
+        "id" : 2,
+        "code" : "AU",
+        "name" : "Australia",
+        "category" : {
+          "id" : 407880
+        },
+        "isHidden" : false,
+        "createdAt" : 1379460609000,
+        "updatedAt" : 1595572035000,
+        "status" : "active",
+        "lookalikeAccepted" : true
+      }, {
+        "id" : 3,
+        "code" : "CA",
+        "name" : "Canada",
+        "category" : {
+          "id" : 407904
+        },
+        "isHidden" : false,
+        "createdAt" : 1379460609000,
+        "updatedAt" : 1595534481000,
+        "status" : "active",
+        "lookalikeAccepted" : true
+      }, {
+        "id" : 4,
+        "code" : "GB",
+        "name" : "United Kingdom",
+        "category" : {
+          "id" : 408097
+        },
+        "isHidden" : false,
+        "createdAt" : 1379460609000,
+        "updatedAt" : 1595534481000,
+        "status" : "active",
+        "lookalikeAccepted" : true,
+        "regionId" : 242
+      }, {
+        "id" : 6,
+        "code" : "ES",
+        "name" : "Spain",
+        "category" : {
+          "id" : 408074
+        },
+        "isHidden" : false,
+        "createdAt" : 1379460609000,
+        "updatedAt" : 1595534481000,
+        "status" : "active",
+        "lookalikeAccepted" : true,
+        "regionId" : 242
+      }, {
+        "id" : 9,
+        "code" : "IT",
+        "name" : "Italy",
+        "category" : {
+          "id" : 407977
+        },
+        "isHidden" : false,
+        "createdAt" : 1379460609000,
+        "updatedAt" : 1595534481000,
+        "status" : "active",
+        "lookalikeAccepted" : true,
+        "regionId" : 242
+      }, {
+        "id" : 10,
+        "code" : "FR",
+        "name" : "France",
+        "category" : {
+          "id" : 407947
+        },
+        "isHidden" : false,
+        "createdAt" : 1379460609000,
+        "updatedAt" : 1595534481000,
+        "status" : "active",
+        "lookalikeAccepted" : true,
+        "regionId" : 242
+      }, {
+        "id" : 19,
+        "code" : "NZ",
+        "name" : "New Zealand",
+        "category" : {
+          "id" : 408023
+        },
+        "isHidden" : false,
+        "createdAt" : 1379460609000,
+        "updatedAt" : 1595534481000,
+        "status" : "active",
+        "lookalikeAccepted" : true
+      }, {
+        "id" : 5,
+        "code" : "DE",
+        "name" : "Germany",
+        "category" : {
+          "id" : 407953
+        },
+        "isHidden" : false,
+        "createdAt" : 1379460609000,
+        "updatedAt" : 1595534481000,
+        "status" : "active",
+        "lookalikeAccepted" : true,
+        "regionId" : 242
+      }, {
+        "id" : 11,
+        "code" : "BR",
+        "name" : "Brazil",
+        "category" : {
+          "id" : 407898
+        },
+        "isHidden" : false,
+        "createdAt" : 1379460609000,
+        "updatedAt" : 1595543655000,
+        "status" : "active",
+        "lookalikeAccepted" : true
+      }, {
+        "id" : 8,
+        "code" : "MX",
+        "name" : "Mexico",
+        "category" : {
+          "id" : 408009
+        },
+        "isHidden" : false,
+        "createdAt" : 1379460609000,
+        "updatedAt" : 1595543655000,
+        "status" : "active",
+        "lookalikeAccepted" : true
+      }, {
+        "id" : 14,
+        "code" : "IN",
+        "name" : "India",
+        "category" : {
+          "id" : 407970
+        },
+        "isHidden" : false,
+        "createdAt" : 1379460609000,
+        "updatedAt" : 1595570698000,
+        "status" : "active",
+        "lookalikeAccepted" : true
+      }, {
+        "id" : 15,
+        "code" : "TW",
+        "name" : "Taiwan",
+        "category" : {
+          "id" : 408082
+        },
+        "isHidden" : false,
+        "createdAt" : 1379460609000,
+        "updatedAt" : 1595574892000,
+        "status" : "active",
+        "lookalikeAccepted" : false
+      }, {
+        "id" : 17,
+        "code" : "SG",
+        "name" : "Singapore",
+        "category" : {
+          "id" : 408064
+        },
+        "isHidden" : false,
+        "createdAt" : 1379460609000,
+        "updatedAt" : 1595534481000,
+        "status" : "active",
+        "lookalikeAccepted" : true
+      }, {
+        "id" : 20,
+        "code" : "JP",
+        "name" : "Japan",
+        "category" : {
+          "id" : 407979
+        },
+        "isHidden" : false,
+        "createdAt" : 1379460609000,
+        "updatedAt" : 1595534481000,
+        "status" : "active",
+        "lookalikeAccepted" : true
+      }, {
+        "id" : 30,
+        "code" : "PH",
+        "name" : "Philippines",
+        "category" : {
+          "id" : 408040
+        },
+        "isHidden" : false,
+        "createdAt" : 1379460609000,
+        "updatedAt" : 1595534481000,
+        "status" : "active",
+        "lookalikeAccepted" : true
+      }, {
+        "id" : 32,
+        "code" : "KR",
+        "name" : "South Korea",
+        "category" : {
+          "id" : 408072
+        },
+        "isHidden" : false,
+        "createdAt" : 1379460609000,
+        "updatedAt" : 1595416639000,
+        "status" : "active",
+        "lookalikeAccepted" : true
+      }, {
+        "id" : 39,
+        "code" : "TH",
+        "name" : "Thailand",
+        "category" : {
+          "id" : 408085
+        },
+        "isHidden" : false,
+        "createdAt" : 1392917350000,
+        "updatedAt" : 1595575122000,
+        "status" : "active",
+        "lookalikeAccepted" : true
+      }, {
+        "id" : 40,
+        "code" : "ID",
+        "name" : "Indonesia",
+        "category" : {
+          "id" : 407971
+        },
+        "isHidden" : false,
+        "createdAt" : 1392917379000,
+        "updatedAt" : 1595534481000,
+        "status" : "active",
+        "lookalikeAccepted" : true
+      }, {
+        "id" : 74,
+        "code" : "BD",
+        "name" : "Bangladesh",
+        "category" : {
+          "id" : 407886
+        },
+        "isHidden" : false,
+        "createdAt" : 1427843695000,
+        "updatedAt" : 1591168417000,
+        "status" : "active",
+        "lookalikeAccepted" : false
+      }, {
+        "id" : 165,
+        "code" : "MM",
+        "name" : "Burma (Myanmar)",
+        "category" : {
+          "id" : 407923
+        },
+        "isHidden" : false,
+        "createdAt" : 1427843695000,
+        "updatedAt" : 1592561186000,
+        "status" : "active",
+        "lookalikeAccepted" : false
+      }, {
+        "id" : 176,
+        "code" : "MY",
+        "name" : "Malaysia",
+        "category" : {
+          "id" : 408000
+        },
+        "isHidden" : false,
+        "createdAt" : 1427843695000,
+        "updatedAt" : 1595534481000,
+        "status" : "active",
+        "lookalikeAccepted" : true
+      }, {
+        "id" : 189,
+        "code" : "PK",
+        "name" : "Pakistan",
+        "category" : {
+          "id" : 408033
+        },
+        "isHidden" : false,
+        "createdAt" : 1427843695000,
+        "updatedAt" : 1595333532000,
+        "status" : "active",
+        "lookalikeAccepted" : false
+      }, {
+        "id" : 233,
+        "code" : "VN",
+        "name" : "Vietnam",
+        "category" : {
+          "id" : 408105
+        },
+        "isHidden" : false,
+        "createdAt" : 1427843695000,
+        "updatedAt" : 1595574892000,
+        "status" : "active",
+        "lookalikeAccepted" : true
+      } ],
+      "status" : "active"
+    } ],
+    "labels" : [ ],
+    "status" : "active",
+    "name" : "20200716_DIREC_Farmacenter:Medicamentos_SALUD",
+    "id" : 581494,
+    "attributes" : [ ],
+    "created_at" : "2020-07-16T16:33:32+0000",
+    "updated_at" : "2020-07-17T01:14:55+0000",
+    "device_type" : "all",
+    "sharing_type" : "MODELING_TARGETING_AND_ANALYTICS",
+    "campaign_count" : 1,
+    "usage_type" : "MODELING_TARGETING_AND_ANALYTICS"
+  } ],
+  "total_count" : 1
+}
