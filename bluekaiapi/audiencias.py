@@ -200,6 +200,10 @@ for aud_id in audience_id:
                                 }}, upsert=False)
                 
                 print("actualizo reach")
-        
+    
+    d = AUD.DiscoveryAudience(partner_id, str(aud_id), bkuid, bksecretkey, reach)
+    discovery = d;
+    print ("discovery -->", discovery)
+
     cont = cont + 1
     

@@ -17,6 +17,7 @@ from urllib.request import urlopen
 from urllib.parse import urlparse
 
 headers = {"Accept":"application/json","Content-type":"application/json"}
+headersDiscovery = {"Accept":"application/json","Content-type":"application/x-www-form-urlencoded"}
 #--------------------------------------------------------------------------------------------------------------
 
 def InputBuilder(bkuid, bksecretkey,url, method, data):
@@ -25,7 +26,7 @@ def InputBuilder(bkuid, bksecretkey,url, method, data):
         parsedUrl = urlparse(url)
         print (parsedUrl)
         stringToSign += parsedUrl.path
-
+        
         # splitting the query into array of parameters separated by the '&' character
         #print parsedUrl.query
         qP = parsedUrl.query.split('&')
@@ -105,7 +106,7 @@ def doRequest(url, method, data):
                 # print("method en dorequest ",type(method))
                 # print("data en dorequest ", type(data))
                 request = urllib.request.Request(url, data.encode('utf-8'), headers)
-                request.get_method = lambda: 'POST'
+                request.get_method = lambda: 'POST2'
                 # print("request", request)
                 opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cJ))
                 u = opener.open(request)
@@ -117,6 +118,45 @@ def doRequest(url, method, data):
                 # return True
                 print("rawdata -->", rawData.decode("UTF-8"))
                 return rawData.decode("UTF-8")
+
+            elif method == "POST2":
+                print("Post Method2!")
+                
+                # data = urllib.parse.urlencode(data) #I added this
+                # data = json.dumps(data)
+                # data = data.encode('utf-8')
+                # data = str(data)
+                # print(type(data))
+                # print ("data final2 ",data)
+                # data = urllib.parse.quote(data)
+                # data = data.decode('utf-8')
+                # data = json.dumps(data)
+                # data = data.encode('utf-8')
+                # data = data.replace("[1,None]", "1")
+ 
+                # data = str(data)
+                # data = data.replace(" ", "")
+                # data = data.replace("'", "\"")
+                # data = data.replace("None", "null")
+ 
+                print ("data discovery",data)
+                print("url en dorequest ",type(url))
+                print("method en dorequest ",type(method))
+                print("data en dorequest ", type(data))
+                request = urllib.request.Request(url, data.encode('utf-8'), headersDiscovery)
+                request.get_method = lambda: 'POST'
+                # print("request", request)
+                opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cJ))
+                u = opener.open(request)
+                rawData = u.read()
+                
+                print ("\nResponse Code: 200")
+                # print ("\nAPI Response:\n" + rawData.decode("utf-8") + "\n")
+                print("\n------------------------------------------------------> SUCESS!!!\n")
+                # return True
+                print("rawdataDiscovery -->", rawData.decode("UTF-8"))
+                return rawData.decode("UTF-8")
+
             elif data != None :
                 request = urllib.request.Request(url, data, headers)
             else:
@@ -182,7 +222,6 @@ class BluekaiAudienceCall:
        
         Url = "https://services.bluekai.com/Services/WS/SegmentInventory?pid="+pid
         # data = '{"AND":[{"AND":[{"OR":[{"cat":595020}]}]}]}'
-        # data = '{"AND":[{"AND":[{"OR":[{"cat":595020,"freq":1},{"cat":630949,"freq":1},{"cat":630950,"freq":1},{"cat":630952,"freq":1},{"cat":630955,"freq":1},{"cat":630957,"freq":1},{"cat":639871,"freq":1},{"cat":1400385,"freq":1},{"cat":1402275,"freq":1},{"cat":1552728,"freq":1}]}]}]}'
         data = str(data)
         data = data.replace(" ", "")
         # data = data.replace("[1,None]", "1")
@@ -202,9 +241,10 @@ class BluekaiAudienceCall:
 
     def DiscoveryAudience(self, pid, audienceID, bkuid, bksecretkey, data):
            
-        Url = "https://services.bluekai.com/Services/WS/WSMultiAudience"
+        Url = "https://services.bluekai.com/Services/WS/WSMultiAudience?pid="+pid
         # data = '{"AND":[{"AND":[{"OR":[{"cat":595020}]}]}]}'
         # data = '{"AND":[{"AND":[{"OR":[{"cat":595020,"freq":1},{"cat":630949,"freq":1},{"cat":630950,"freq":1},{"cat":630952,"freq":1},{"cat":630955,"freq":1},{"cat":630957,"freq":1},{"cat":639871,"freq":1},{"cat":1400385,"freq":1},{"cat":1402275,"freq":1},{"cat":1552728,"freq":1}]}]}]}'
+        data = 'segment={\"segment1\":{\"AND\":[{\"AND\":[{\"OR\":[{\"cat\":595020},{\"cat\":630949}]}]}]}}'
         # data = str(data)
         # data = data.replace(" ", "")
         # data = data.replace("[1,None]", "1")
@@ -217,7 +257,7 @@ class BluekaiAudienceCall:
         # data = data.encode('utf-8')
         print("data en discovery\n", data);
         # print(type(data));
-        Request = doRequest(signedUrl, "POST", data)
+        Request = doRequest(signedUrl, "POST2", data)
         
         r1 = json.loads(Request)
         return r1
