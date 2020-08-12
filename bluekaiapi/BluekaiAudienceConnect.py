@@ -12,6 +12,7 @@ import http
 import requests
 import pandas as pd
 import time
+import re 
 
 from urllib.request import urlopen
 from urllib.parse import urlparse
@@ -50,7 +51,7 @@ def InputBuilder(bkuid, bksecretkey,url, method, data):
             print("entro a agregar data en bksig")
             stringToSign += str(data)
             # stringToSign += json.dumps(data)
-        print ("\nString to be Signed:\n" + stringToSign)
+        # print ("\nString to be Signed:\n" + stringToSign)
 
         # Encoding for hmac method
         stringToSign = stringToSign.encode("utf-8")
@@ -106,7 +107,7 @@ def doRequest(url, method, data):
                 # print("method en dorequest ",type(method))
                 # print("data en dorequest ", type(data))
                 request = urllib.request.Request(url, data.encode('utf-8'), headers)
-                request.get_method = lambda: 'POST2'
+                request.get_method = lambda: 'POST'
                 # print("request", request)
                 opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cJ))
                 u = opener.open(request)
@@ -116,7 +117,7 @@ def doRequest(url, method, data):
                 # print ("\nAPI Response:\n" + rawData.decode("utf-8") + "\n")
                 print("\n------------------------------------------------------> SUCESS!!!\n")
                 # return True
-                print("rawdata -->", rawData.decode("UTF-8"))
+                # print("rawdata -->", rawData.decode("UTF-8"))
                 return rawData.decode("UTF-8")
 
             elif method == "POST2":
@@ -139,7 +140,12 @@ def doRequest(url, method, data):
                 # data = data.replace("'", "\"")
                 # data = data.replace("None", "null")
  
-                print ("data discovery",data)
+                
+                # data = 'segment={"segment1"'+ str(data) +'}'
+                # data = data.replace(" ", "")
+                # data = data.replace("'", "\"")
+                # data = data.replace("None", "null")
+                # print ("data discovery",data)
                 print("url en dorequest ",type(url))
                 print("method en dorequest ",type(method))
                 print("data en dorequest ", type(data))
@@ -154,12 +160,13 @@ def doRequest(url, method, data):
                 # print ("\nAPI Response:\n" + rawData.decode("utf-8") + "\n")
                 print("\n------------------------------------------------------> SUCESS!!!\n")
                 # return True
-                print("rawdataDiscovery -->", rawData.decode("UTF-8"))
+                # print("rawdataDiscovery -->", rawData.decode("UTF-8"))
                 return rawData.decode("UTF-8")
 
             elif data != None :
                 request = urllib.request.Request(url, data, headers)
             else:
+                print("Get Method")
                 request = urllib.request.Request(url, None, headers)  
                 opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cJ))
                 u = opener.open(request)
@@ -170,6 +177,7 @@ def doRequest(url, method, data):
                 # print(rawData) 
         ###elchido
                 # print ("\nAPI Response:\n" + rawData.decode("utf-8") + "\n")
+
                 return rawData.decode("UTF-8")
 
         except urllib.error.HTTPError as e:
@@ -199,7 +207,7 @@ class BluekaiAudienceCall:
     def ListAudience(self, pid, bkuid, bksecretkey):
         Url = "https://services.bluekai.com/Services/WS/audiences?pid="+pid+"&label=hexagondata"
         signedUrl = InputBuilder(bkuid, bksecretkey, Url, self.method, None)
-        
+
         Request = doRequest(signedUrl, "GET", None)
         
         r1 = json.loads(Request)
@@ -208,13 +216,12 @@ class BluekaiAudienceCall:
     
     def DetailAudience(self, pid, audienceID, bkuid, bksecretkey):
         Url = "https://services.bluekai.com/Services/WS/audiences/"+audienceID+"/?pid="+pid
-        print("url para detalle", Url);
+        # print("url para detalle", Url);
         signedUrl = InputBuilder(bkuid, bksecretkey, Url, self.method, None)
         
         Request = doRequest(signedUrl, "GET", None)
         
-        r1 = json.loads(Request)
-        
+        r1 = json.loads(Request)     
         
         return r1
 
@@ -232,8 +239,8 @@ class BluekaiAudienceCall:
         
         # data = json.dumps(data)
         # data = data.encode('utf-8')
-        print("data en reach\n", data);
-        print(type(data));
+        # print("data en reach\n", data);
+        # print(type(data));
         Request = doRequest(signedUrl, "POST", data)
         
         r1 = json.loads(Request)
@@ -244,20 +251,122 @@ class BluekaiAudienceCall:
         Url = "https://services.bluekai.com/Services/WS/WSMultiAudience?pid="+pid
         # data = '{"AND":[{"AND":[{"OR":[{"cat":595020}]}]}]}'
         # data = '{"AND":[{"AND":[{"OR":[{"cat":595020,"freq":1},{"cat":630949,"freq":1},{"cat":630950,"freq":1},{"cat":630952,"freq":1},{"cat":630955,"freq":1},{"cat":630957,"freq":1},{"cat":639871,"freq":1},{"cat":1400385,"freq":1},{"cat":1402275,"freq":1},{"cat":1552728,"freq":1}]}]}]}'
-        data = 'segment={\"segment1\":{\"AND\":[{\"AND\":[{\"OR\":[{\"cat\":595020},{\"cat\":630949}]}]}]}}'
-        # data = str(data)
+        # data = 'segment={"segment1":{"AND":[{"AND":[{"OR":[{"cat":595020},{"cat":630949}]}]}]}}'
+        # data = 'segment={"segment1":{"AND":[{"AND":[{"OR":[{"AND":[{"cat":595020,"freq":[1,null]}]},{"AND":[{"cat":630949,"freq":[1,null]}]},{"AND":[{"cat":630950,"freq":[1,null]}]},{"AND":[{"cat":630952,"freq":[1,null]}]},{"AND":[{"cat":630955,"freq":[1,null]}]},{"AND":[{"cat":630957,"freq":[1,null]}]},{"AND":[{"cat":639871,"freq":[1,null]}]},{"AND":[{"cat":1400385,"freq":[1,null]}]},{"AND":[{"cat":1402275,"freq":[1,null]}]},{"AND":[{"cat":1552728,"freq":[1,null]}]}]}]}]}}'
+        data = str(data)
         # data = data.replace(" ", "")
         # data = data.replace("[1,None]", "1")
-        # data = data.replace("'", "\"")
-        # data = data.replace("None", "null")
+        data = ReplaceDiscovery(data)
+        data = 'segment={"segment1":'+ data +'}'
+
+        # data = data.match('"reach":1352,')
         signedUrl = InputBuilder(bkuid, bksecretkey, Url, "POST", data)
+        
         # data = urllib.parse.urlencode(data)
         
         # data = json.dumps(data)
         # data = data.encode('utf-8')
-        print("data en discovery\n", data);
+        # replaced = re.sub(r'"reach":\d{1,9},','', data)
+        # replaced = re.sub(r',"reach":\d{1,9}','', data)
+        # replaced = re.sub(r',"minFreq":\d{1,2}','', replaced)
+        # replaced = re.sub(r',"id":\d{1,9}','', replaced)
+        
+        # data = re.sub(r'"privateIDGraph":\d{1,9},"oracleMatchMultiplier":\d{1,9},"oracleIDGraph":\d{1,9},"totalReach":\d{1,9},"adjustedTotalReach":\d{1,9}','', data)
+        # data = 'segment={"segment1":{"AND":[{"AND":[{"OR":[{"AND":[{"cat":595020,"freq":[1,null]}]},{"AND":[{"cat":630949,"freq":[1,null]}]},{"AND":[{"cat":630950,"freq":[1,null]}]},{"AND":[{"cat":630952,"freq":[1,null]}]},{"AND":[{"cat":630955,"freq":[1,null]}]},{"AND":[{"cat":630957,"freq":[1,null]}]},{"AND":[{"cat":639871,"freq":[1,null]}]},{"AND":[{"cat":1400385,"freq":[1,null]}]},{"AND":[{"cat":1402275,"freq":[1,null]}]},{"AND":[{"cat":1552728,"freq":[1,null]}]}]}]}]}}'
+        # data = 'segment={"segment1":{"AND":[{"AND":[{"OR":[{"AND":[{"cat":595020,"freq":[1,null]}]},{"AND":[{"cat":630949,"freq":[1,null]}]},{"AND":[{"cat":630950,"freq":[1,null]}]},{"AND":[{"cat":630952,"freq":[1,null]}]},{"AND":[{"cat":630955,"freq":[1,null]}]},{"AND":[{"cat":630957,"freq":[1,null]}]},{"AND":[{"cat":639871,"freq":[1,null]}]},{"AND":[{"cat":1400385,"freq":[1,null]}]},{"AND":[{"cat":1402275,"freq":[1,null]}]},{"AND":[{"cat":1552728,"freq":[1,null]}]}]}]}]}}'
+
+        # data = re.sub(r'"byLinkOwnership":\{\},','', data)
+        # print("data en discovery1\n", data);
+        # data = re.sub(r'^.*?idTypeReach"','}', data)
+        # data = re.sub(r',"idTypeReach.*','}', data)
+        # data = re.sub(r',{"NOT":{"AND":\[\]}}','', data)
+
+        # replaced = re.sub(r',.*?HELLO','', replaced)
+        # replaced = re.sub(r',([^"]*)"','', replaced)
+
+        # replaced.split(",")[0]
+        # replaced = re.sub(r'"reach":\d{1,2},', '', data)
+        
+
+        # re.sub(r"(\w)(\w+)(\w)", repl, text)
+        # print("data en discovery2\n", data);
         # print(type(data));
+        
         Request = doRequest(signedUrl, "POST2", data)
         
         r1 = json.loads(Request)
         return r1
+    
+    def CategoryAudience(self, pid, bkuid, bksecretkey):
+           
+        Url = "https://taxonomy.bluekai.com/taxonomy/categories?view=BUYER&partner.id="+pid
+        # data = '{"AND":[{"AND":[{"OR":[{"cat":595020}]}]}]}'
+        # data = '{"AND":[{"AND":[{"OR":[{"cat":595020,"freq":1},{"cat":630949,"freq":1},{"cat":630950,"freq":1},{"cat":630952,"freq":1},{"cat":630955,"freq":1},{"cat":630957,"freq":1},{"cat":639871,"freq":1},{"cat":1400385,"freq":1},{"cat":1402275,"freq":1},{"cat":1552728,"freq":1}]}]}]}'
+        # data = 'segment={"segment1":{"AND":[{"AND":[{"OR":[{"cat":595020},{"cat":630949}]}]}]}}'
+        # data = 'segment={"segment1":{"AND":[{"AND":[{"OR":[{"AND":[{"cat":595020,"freq":[1,null]}]},{"AND":[{"cat":630949,"freq":[1,null]}]},{"AND":[{"cat":630950,"freq":[1,null]}]},{"AND":[{"cat":630952,"freq":[1,null]}]},{"AND":[{"cat":630955,"freq":[1,null]}]},{"AND":[{"cat":630957,"freq":[1,null]}]},{"AND":[{"cat":639871,"freq":[1,null]}]},{"AND":[{"cat":1400385,"freq":[1,null]}]},{"AND":[{"cat":1402275,"freq":[1,null]}]},{"AND":[{"cat":1552728,"freq":[1,null]}]}]}]}]}}'
+        # data = str(data)
+        # data = data.replace(" ", "")
+        # data = data.replace("[1,None]", "1")
+        # data = ReplaceDiscovery(data)
+        # data = 'segment={"segment1":'+ data +'}'
+
+        # data = data.match('"reach":1352,')
+        signedUrl = InputBuilder(bkuid, bksecretkey, Url, self.method, None)
+        Request = doRequest(signedUrl, "GET", None)
+        
+        r1 = json.loads(Request)
+        
+        return r1
+        
+        # data = urllib.parse.urlencode(data)
+        
+        # data = json.dumps(data)
+        # data = data.encode('utf-8')
+        # replaced = re.sub(r'"reach":\d{1,9},','', data)
+        # replaced = re.sub(r',"reach":\d{1,9}','', data)
+        # replaced = re.sub(r',"minFreq":\d{1,2}','', replaced)
+        # replaced = re.sub(r',"id":\d{1,9}','', replaced)
+        
+        # data = re.sub(r'"privateIDGraph":\d{1,9},"oracleMatchMultiplier":\d{1,9},"oracleIDGraph":\d{1,9},"totalReach":\d{1,9},"adjustedTotalReach":\d{1,9}','', data)
+        # data = 'segment={"segment1":{"AND":[{"AND":[{"OR":[{"AND":[{"cat":595020,"freq":[1,null]}]},{"AND":[{"cat":630949,"freq":[1,null]}]},{"AND":[{"cat":630950,"freq":[1,null]}]},{"AND":[{"cat":630952,"freq":[1,null]}]},{"AND":[{"cat":630955,"freq":[1,null]}]},{"AND":[{"cat":630957,"freq":[1,null]}]},{"AND":[{"cat":639871,"freq":[1,null]}]},{"AND":[{"cat":1400385,"freq":[1,null]}]},{"AND":[{"cat":1402275,"freq":[1,null]}]},{"AND":[{"cat":1552728,"freq":[1,null]}]}]}]}]}}'
+        # data = 'segment={"segment1":{"AND":[{"AND":[{"OR":[{"AND":[{"cat":595020,"freq":[1,null]}]},{"AND":[{"cat":630949,"freq":[1,null]}]},{"AND":[{"cat":630950,"freq":[1,null]}]},{"AND":[{"cat":630952,"freq":[1,null]}]},{"AND":[{"cat":630955,"freq":[1,null]}]},{"AND":[{"cat":630957,"freq":[1,null]}]},{"AND":[{"cat":639871,"freq":[1,null]}]},{"AND":[{"cat":1400385,"freq":[1,null]}]},{"AND":[{"cat":1402275,"freq":[1,null]}]},{"AND":[{"cat":1552728,"freq":[1,null]}]}]}]}]}}'
+
+        # data = re.sub(r'"byLinkOwnership":\{\},','', data)
+        # print("data en discovery1\n", data);
+        # data = re.sub(r'^.*?idTypeReach"','}', data)
+        # data = re.sub(r',"idTypeReach.*','}', data)
+        # data = re.sub(r',{"NOT":{"AND":\[\]}}','', data)
+
+        # replaced = re.sub(r',.*?HELLO','', replaced)
+        # replaced = re.sub(r',([^"]*)"','', replaced)
+
+        # replaced.split(",")[0]
+        # replaced = re.sub(r'"reach":\d{1,2},', '', data)
+        
+
+        # re.sub(r"(\w)(\w+)(\w)", repl, text)
+        # print("data en discovery2\n", data);
+        # print(type(data));
+        
+        # Request = doRequest(signedUrl, "GET", data)
+        
+        # r1 = json.loads(Request)
+        # return r1
+
+def ReplaceDiscovery(data):
+        data = data.replace(" ", "")
+        data = data.replace("'", "\"")
+        data = data.replace("None", "null")
+        data = re.sub(r'"reach":\d{1,9},','', data)
+        data = re.sub(r',"reach":\d{1,9}','', data)
+        data = re.sub(r',"minFreq":\d{1,2}','', data)
+        data = re.sub(r',"id":\d{1,9}','', data)
+        data = re.sub(r'"privateIDGraph":\d{1,9},"oracleMatchMultiplier":\d{1,9},"oracleIDGraph":\d{1,9},"totalReach":\d{1,9},"adjustedTotalReach":\d{1,9}','', data)
+        # data = 'segment={"segment1":{"AND":[{"AND":[{"OR":[{"AND":[{"cat":595020,"freq":[1,null]}]},{"AND":[{"cat":630949,"freq":[1,null]}]},{"AND":[{"cat":630950,"freq":[1,null]}]},{"AND":[{"cat":630952,"freq":[1,null]}]},{"AND":[{"cat":630955,"freq":[1,null]}]},{"AND":[{"cat":630957,"freq":[1,null]}]},{"AND":[{"cat":639871,"freq":[1,null]}]},{"AND":[{"cat":1400385,"freq":[1,null]}]},{"AND":[{"cat":1402275,"freq":[1,null]}]},{"AND":[{"cat":1552728,"freq":[1,null]}]}]}]}]}}'
+        # data = 'segment={"segment1":{"AND":[{"AND":[{"OR":[{"AND":[{"cat":595020,"freq":[1,null]}]},{"AND":[{"cat":630949,"freq":[1,null]}]},{"AND":[{"cat":630950,"freq":[1,null]}]},{"AND":[{"cat":630952,"freq":[1,null]}]},{"AND":[{"cat":630955,"freq":[1,null]}]},{"AND":[{"cat":630957,"freq":[1,null]}]},{"AND":[{"cat":639871,"freq":[1,null]}]},{"AND":[{"cat":1400385,"freq":[1,null]}]},{"AND":[{"cat":1402275,"freq":[1,null]}]},{"AND":[{"cat":1552728,"freq":[1,null]}]}]}]}]}}'
+        data = re.sub(r'"byLinkOwnership":\{\},','', data)
+        # print("data en discovery1\n", data);
+        # data = re.sub(r'^.*?idTypeReach"','}', data)
+        data = re.sub(r',"idTypeReach.*','}', data)
+        data = re.sub(r',{"NOT":{"AND":\[\]}}','', data)
+        return data
