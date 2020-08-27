@@ -40,7 +40,7 @@ audiences = JsonList["audiences"]
 audience_names = []
 audience_id = []
 category = []
-categorieDiscmongo = []
+# categorieDiscmongo = []
 categorieInsert = []
 # if NODE_ENV == 'production' :
 #         myclient = pymongo.MongoClient('mongodb+srv://'+ DB_USER +':'+ DB_PASSWORD +'@audiencekit1-76o4f.mongodb.net/audienceKit?retryWrites=true&w=majority')
@@ -52,11 +52,17 @@ mydb = myclient["bluekaiconnector"]
 audienceColl = mydb["audiences"]
 reportsColl = mydb["reports"]
 categoriesColl = mydb["categories"]
+resultCategory = categoriesColl.find()
+
+
+
 
 '''recorre audiencias para sacar audience ids'''
 for a in audiences:
+    # json_formatted_str = json.dumps(a, indent=2)
+    # print("audiencias--->",json_formatted_str)
     # audience_names.append(a["name"])
-    audience_id.append(a["id"])
+    audience_id.append(str(a["id"]))
     date_audience = datetime.strptime(a['updated_at'],'%Y-%m-%dT%H:%M:%S+%f')
     dateAudienceCreate = datetime.strptime(a['created_at'],'%Y-%m-%dT%H:%M:%S+%f')
     now = datetime.now()
@@ -66,11 +72,11 @@ for a in audiences:
     print("id ------->",a['id'])
     # audID = str(a['id'])
 
-    if mydb.audiences.count_documents({ 'audienceId': a['id'] }, limit = 1) and date_audience < now3 : 
-                print("ya existe el id y la fecha " + date_audience.strftime('%Y-%m-%dT%H:%M:%S+%f')+ " es menor a " + now2.strftime('%Y-%m-%dT%H:%M:%S+%f')) 
-    elif mydb.audiences.count_documents({ 'audienceId': a['id'] }, limit = 1) == 0 :
+    if mydb.audiences.count_documents({ 'audienceId': str(a['id']) }, limit = 1) and date_audience < now3 : 
+        print("ya existe el id y la fecha " + date_audience.strftime('%Y-%m-%dT%H:%M:%S+%f')+ " es menor a " + now2.strftime('%Y-%m-%dT%H:%M:%S+%f')) 
+    elif mydb.audiences.count_documents({ 'audienceId': str(a['id']) }, limit = 1) == 0 :
                     audienceColl.insert_one({
-                            'audienceId': a['id'],
+                            'audienceId': str(a['id']),
                             'audienceName': a['name'],
                             'audienceCreationDate': dateAudienceCreate,
                             'audienceModifiedDate': date_audience,
@@ -87,7 +93,7 @@ for a in audiences:
     elif mydb.audiences.count_documents({ 'audienceId': a['id'] }, limit = 1) and date_audience > now3 :
     
                     audienceColl.insert_one({
-                            'audienceId': a['id'],
+                            'audienceId': str(a['id']),
                             'audienceName': a['name'],
                             'audienceCreationDate': dateAudienceCreate,
                             'audienceModifiedDate': date_audience,
@@ -100,51 +106,8 @@ for a in audiences:
                             'segment':'', 
                             'reach':''                        
                     })
-                    print("inserta audiencias", a['id']) 
+                    print("inserta audiencias", str(a['id'])) 
 
-    #si la fecha de modificacion de la audiencia es reciente y ya existe el id 
-    if mydb.reports.count_documents({ 'audienceId': a['id'] }, limit = 1) and date_audience < now3 : 
-                print("ya existe el id y la fecha " + date_audience.strftime('%Y-%m-%dT%H:%M:%S+%f')+ " esta cerca a " + now3.strftime('%Y-%m-%dT%H:%M:%S+%f')) 
-    
-    #si no existe audience id va a insertar datos iniciales
-    elif mydb.reports.count_documents({ 'audienceId': a['id'] }, limit = 1) == 0 :
-                    reportsColl.insert_one({
-                            'audienceId': a['id'],
-                            'clientId': partner_id,
-                            'audienceName': a['name'],
-                            # 'audienceCreationDate': dateAudienceCreate,
-                            # 'audienceModifiedDate': date_audience,
-                            # 'audienceCountryCodes': a['countryCodes'],
-                            # 'audienceDeviceType': a['device_type'],
-                            # 'clientId': partner_id,
-                            # "recency" : a['recency'],
-                            # 'typePlatform': 3,
-                            # 'namePlatform': 'bluekai',
-                            # 'segment':'',
-                            'discovery':''
-                    })
-                    print("inserta reports", a['id'])
-    #si existe id de audiencia y el date de modificacion esta lejos
-    elif mydb.reports.count_documents({ 'audienceId': a['id'] }, limit = 1) and date_audience > now3 :
-    
-                    reportsColl.insert_one({
-                            'audienceId': a['id'],
-                            'clientId': partner_id,
-                            'audienceName': a['name'],
-                            # 'audienceCreationDate': dateAudienceCreate,
-                            # 'audienceModifiedDate': date_audience,
-                            # 'audienceCountryCodes': a['countryCodes'],
-                            # 'audienceDeviceType': a['device_type'],
-                            # 'clientId': partner_id,
-                            # "recency" : a['recency'],
-                            # 'typePlatform': 3,
-                            # 'namePlatform': 'bluekai',
-                            # 'segment':'', 
-                            'discovery':''                        
-                    })
-                    print("actualiza reports", a['id']) 
-
-    cont = 1
     a = AUD.DetailAudience(partner_id, str(aud_id), bkuid, bksecretkey)
     segments = a['segments'];
     segmentBody = segments
@@ -161,6 +124,7 @@ for a in audiences:
 #     f.write(rawData.decode('utf-8'))
     print ("audienceID", audience_id)
     for aud_id in audience_id:
+
         # hint = str(cont)+"\r"
         # print("hint",hint)
         data = segments
@@ -187,120 +151,276 @@ for a in audiences:
         
         d = AUD.DiscoveryAudience(partner_id, str(aud_id), bkuid, bksecretkey, reach)
         discovery = d;
+        json_formatted_str = json.dumps(discovery, indent=2)
+        print("DISCOVERY--->",json_formatted_str)
         # print("discovery---->",discovery)
         #verifica si hay alguna fecha nueva para discoverys
-        report_one = reportsColl.find_one({"date": discovery['date']})
-        # print("existe fecha ?",report_one) 
-        if mydb.reports.count_documents({ 'audienceId': aud_id }, limit = 1) and report_one is not None:                   
-                    print("si hay date")             
-                    #arma el contenido de categoriesids en discovery 
-                    for categoriesDisc in discovery['Audiences']['1']:
+        report_date = reportsColl.find_one({"date": discovery['date']})
+        # json_formatted_str = json.dumps(a, indent=2)
+        # print("audiencias--->",json_formatted_str)
+ 
 
-                        categorieDiscmongo.append({
-                                    "category_id":categoriesDisc['categoryId'],
-                                    # "category_name":'',
-                                    # "category_description":'',
-                                    # "vertical_name":'',
-                                    # "data_type":'',
-                                    # "path_array":'',                                                   
-                                    "second_segment_reach":categoriesDisc['backgroundSegmentSize'],
-                                    "category_index":categoriesDisc['segment1Index'],
-                                    "base_segment_size_filtered":categoriesDisc['segment1Size'],
-                                    "internal_leftCI":categoriesDisc['segment1LeftCI'],
-                                    "internal_rightCI":categoriesDisc['segment1RightCI'],
-                                    "internal_CL":categoriesDisc['segment1CL']
-                        })
-                    #actualiza el objeto de discovery
-                    # print("categoriemongo",categorieDiscmongo)
-                    reportsColl.update_one({'audienceId': aud_id },{"$set": {
+#si no existe audience id va a insertar datos iniciales
+        if mydb.reports.count_documents({ 'audienceId': str(a['id']) }, limit = 1) == 0:
+            for categoriesDisc in discovery['Audiences']['1']:
+
+                category_id = categoriesDisc['categoryId']
+                second_segment_reach = categoriesDisc['backgroundSegmentSize']
+                category_index = categoriesDisc['segment1Index']
+                base_segment_size_filtered = categoriesDisc['segment1Size']
+                internal_leftCI = categoriesDisc['segment1LeftCI']
+                internal_rightCI = categoriesDisc['segment1RightCI']
+                internal_CL = categoriesDisc['segment1CL']
+                
+                reportsColl.insert_one({
+                        'audienceId': str(a['id']),
+                        'clientId': partner_id,
+                        'audienceName': a['name'],
+                        'base_segment_size_unfiltered': discovery['totalsegment1Size'],
+                        'odc_universe_reach': discovery['totalbackgroundSegmentSize'],
+                        'date': discovery['date'],
+                        'category_id': category_id,
+                        'second_segment_reach': second_segment_reach,
+                        'category_index': category_index,
+                        'base_segment_size_filtered': base_segment_size_filtered,
+                        'internal_leftCI': internal_leftCI,
+                        'internal_rightCI': internal_rightCI,
+                        'internal_CL ': internal_CL     
+                })
+                print("inserta datos iniciales", category_id)
+
+
+
+#si audience id existe y ya hay un date en report cerca
+        elif mydb.reports.count_documents({ 'audienceId': aud_id }, limit = 1) and date_audience < now3 :                   
+            # print("si hay date cerca")             
+                    #arma el contenido de categoriesids en reports
+            for categoriesDisc in discovery['Audiences']['1']:
+                categoryIdInR = reportsColl.find_one({"category_id": categoriesDisc['categoryId']})
+
+                category_id = categoriesDisc['categoryId']
+                second_segment_reach = categoriesDisc['backgroundSegmentSize']
+                category_index = categoriesDisc['segment1Index']
+                base_segment_size_filtered = categoriesDisc['segment1Size']
+                internal_leftCI = categoriesDisc['segment1LeftCI']
+                internal_rightCI = categoriesDisc['segment1RightCI']
+                internal_CL = categoriesDisc['segment1CL']
+
+# #compara categoria en categories y categoria en report para ver si esta ... cual id esta ??
+#                 if categoryIdInR is not None:
+#                 #ya esta en base y actualiza el incompleto
+#                         print("categoryIdInR---->",categoryIdInR['_id'])
+
+#                         reportsColl.update_one({'_id': categoryIdInR['_id'] },{"$set": {
+#                                             'base_segment_size_unfiltered': discovery['totalsegment1Size'],
+#                                             'odc_universe_reach': discovery['totalbackgroundSegmentSize'],
+#                                             'second_segment_reach': discovery['date'],
+#                                             'category_id': category_id,
+#                                             'second_segment_reach': second_segment_reach,
+#                                             'category_index': category_index,
+#                                             'base_segment_size_filtered': base_segment_size_filtered,
+#                                             'internal_leftCI': internal_leftCI,
+#                                             'internal_rightCI': internal_rightCI,
+#                                             'internal_CL ': internal_CL         
+#                         }}, upsert=False)
+#                         print("actualizo discovery date en reports")
+                
+                if categoryIdInR is None:
+                        
+                        reportsColl.insert_one({
+                                'audienceId': str(a['id']),
+                                'clientId': partner_id,
+                                'audienceName': a['name'],
                                 'base_segment_size_unfiltered': discovery['totalsegment1Size'],
                                 'odc_universe_reach': discovery['totalbackgroundSegmentSize'],
                                 'date': discovery['date'],
-                                'discovery': categorieDiscmongo
-                                
-                    }}, upsert=False)
-                    
-                    print("actualizo discovery date en reports")
+                                'category_id': category_id,
+                                'second_segment_reach': second_segment_reach,
+                                'category_index': category_index,
+                                'base_segment_size_filtered': base_segment_size_filtered,
+                                'internal_leftCI': internal_leftCI,
+                                'internal_rightCI': internal_rightCI,
+                                'internal_CL ': internal_CL     
+                        })
+                        print("inserta reports para nuevo category id", category_id)
+                        
+                        # reportsColl.update_one({'_id': categoryIdInR['_id'] },{"$set": {
+                        #                     'base_segment_size_unfiltered': discovery['totalsegment1Size'],
+                        #                     'odc_universe_reach': discovery['totalbackgroundSegmentSize'],
+                        #                     'second_segment_reach': discovery['date'],
+                        #                     'category_id': category_id,
+                        #                     'second_segment_reach': second_segment_reach,
+                        #                     'category_index': category_index,
+                        #                     'base_segment_size_filtered': base_segment_size_filtered,
+                        #                     'internal_leftCI': internal_leftCI,
+                        #                     'internal_rightCI': internal_rightCI,
+                        #                     'internal_CL ': internal_CL         
+                        # }}, upsert=False)
 
-        elif mydb.reports.count_documents({ 'audienceId': aud_id }, limit = 1) and report_one is None:
-            print("no hay fecha y crea un nuevo doc")
-            for categoriesDisc in discovery['Audiences']['1']:
-                categorieDiscmongo.append({
-                        "category_id":categoriesDisc['categoryId'],
-                        # "category_name":'',
-                        # "category_description":'',
-                        # "vertical_name":'',
-                        # "data_type":'',
-                        # "path_array":'',                               
-                        "second_segment_reach":categoriesDisc['backgroundSegmentSize'],
-                        "category_index":categoriesDisc['segment1Index'],
-                        "base_segment_size_filtered":categoriesDisc['segment1Size'],
-                        "internal_leftCI":categoriesDisc['segment1LeftCI'],
-                        "internal_rightCI":categoriesDisc['segment1RightCI'],
-                        "internal_CL":categoriesDisc['segment1CL']
-                })
-                                                
-            reportsColl.insert_one({
-                    'audienceId': a['id'],
-                    'clientId': partner_id,
-                    'audienceName': a['name'],
-                    'base_segment_size_unfiltered': discovery['totalsegment1Size'],
-                    'odc_universe_reach': discovery['totalbackgroundSegmentSize'],
-                    'date': discovery['date'],
-                    'discovery': categorieDiscmongo
-            })
-            print("inserta reports con nueva fecha", a['id'])
- 
-    c = AUD.CategoryAudience(partner_id, bkuid, bksecretkey)
-    categorieDB = c['items']
-    # print("categories------->",categorieDB)
-    
-    for categorieItem in categorieDB:
-            categoryIdExist = categoriesColl.find_one({"category_id": categorieItem['id']})
+# si audience id existe y date esta lejos
+        elif mydb.reports.count_documents({ 'audienceId': aud_id }, limit = 1) and date_audience > now3:
+            print("la fecha es vieja y crea un nuevo doc")
             
-            # description =  'description' in categorieItem
-            # print(description)
-            # description1 =  categorieItem['description'] in categorieItem
-            # print(description1)
-            if 'description' in categorieItem:
+            for categoriesDisc in discovery['Audiences']['1']:
+ 
+                category_id = categoriesDisc['categoryId']
+                second_segment_reach = categoriesDisc['backgroundSegmentSize']
+                category_index = categoriesDisc['segment1Index']
+                base_segment_size_filtered = categoriesDisc['segment1Size']
+                internal_leftCI = categoriesDisc['segment1LeftCI']
+                internal_rightCI = categoriesDisc['segment1RightCI']
+                internal_CL = categoriesDisc['segment1CL']
 
-                if categoryIdExist is None:
-                    categoriesColl.insert_one({
-                    "category_id":categorieItem['id'],
-                    "category_name":categorieItem['name'],
-                    "category_description":categorieItem['description'],
-                    "partner_id":categorieItem['partner']['id'],
-                    "vertical_name":categorieItem['vertical']['name'],
-                    "data_type":categorieItem['ownershipType'],
-                    "path_array":categorieItem['pathFromRoot']
-                    })
-                    print("insertando", categorieItem['name'])                       
-                else:
-                    print("ya existe id", categorieItem['id'])
-            else:
-                if categoryIdExist is None:
+
+                reportsColl.insert_one({
+                        'audienceId': str(a['id']),
+                        'clientId': partner_id,
+                        'audienceName': a['name'],
+                        'base_segment_size_unfiltered': discovery['totalsegment1Size'],
+                        'odc_universe_reach': discovery['totalbackgroundSegmentSize'],
+                        'date': discovery['date'],
+                        'category_id': category_id,
+                        'second_segment_reach': second_segment_reach,
+                        'category_index': category_index,
+                        'base_segment_size_filtered': base_segment_size_filtered,
+                        'internal_leftCI': internal_leftCI,
+                        'internal_rightCI': internal_rightCI,
+                        'internal_CL ': internal_CL     
+                })
+                print("inserta reports con nueva fecha", a['id'])
+
+
+#inyecta en categories
+
+
+    # c = AUD.CategoryAudience(partner_id, bkuid, bksecretkey)
+    # categorieDB = c['items']
+    # # print("categories------->",categorieDB)
+    
+    # for categorieItem in categorieDB:
+    #         categoryIdExist = categoriesColl.find_one({"category_id": categorieItem['id']})
+            
+    #         # description =  'description' in categorieItem
+    #         # print(description)
+    #         # description1 =  categorieItem['description'] in categorieItem
+    #         # print(description1)
+    #         if 'description' in categorieItem:
+
+    #             if categoryIdExist is None:
+    #                 categoriesColl.insert_one({
+    #                 "category_id":categorieItem['id'],
+    #                 "category_name":categorieItem['name'],
+    #                 "category_description":categorieItem['description'],
+    #                 "partner_id":categorieItem['partner']['id'],
+    #                 "vertical_name":categorieItem['vertical']['name'],
+    #                 "data_type":categorieItem['ownershipType'],
+    #                 "path_array":categorieItem['pathFromRoot']
+    #                 })
+    #             #     print("insertando", categorieItem['name'])                       
+    #             # else:
+    #             #     print("ya existe id", categorieItem['id'])
+    #         else:
+    #             if categoryIdExist is None:
                     
-                    categoriesColl.insert_one({
-                    "category_id":categorieItem['id'],
-                    "category_name":categorieItem['name'],
-                    "partner_id":categorieItem['partner']['id'],
-                    "vertical_name":categorieItem['vertical']['name'],
-                    "data_type":categorieItem['ownershipType'],
-                    "path_array":categorieItem['pathFromRoot']
-                    })
-                    print("insertando sin descripcion", categorieItem['name'])                       
-                else:
-                    print("ya existe id sin descripcion", categorieItem['id'])
+    #                 categoriesColl.insert_one({
+    #                 "category_id":categorieItem['id'],
+    #                 "category_name":categorieItem['name'],
+    #                 "partner_id":categorieItem['partner']['id'],
+    #                 "vertical_name":categorieItem['vertical']['name'],
+    #                 "data_type":categorieItem['ownershipType'],
+    #                 "path_array":categorieItem['pathFromRoot']
+    #                 })
+    #             #     print("insertando sin descripcion", categorieItem['name'])                       
+    #             # else:
+    #             #     print("ya existe id sin descripcion", categorieItem['id'])
+
+
+
 
             # reportMatch = categoriesColl.find_one({"category_id": categorieItem['id']})
             # print(reportMatch["category_id"])
 
-# resultCategory = categoriesColl.find()
-# print(resultCategory)
-# for r in resultCategory:
-#     # print(r['category_id'])
-#     reportIdExist = reportsColl.find_one(r['category_id'])
-#     if reportIdExist is None:
-#         print("no existe en report")
-#     else:
-#         print("el id es ", reportIdExist)
+
+    resultReport = reportsColl.find()
+#inyecta en reports datos de categorias
+    
+
+    for r in resultReport:
+        # print(match)
+        # print(match['category_id'])
+        # revisa en categories si existe el id de category
+        reportIdExist = categoriesColl.find_one({"category_id": r['category_id']})
+        print(reportIdExist)
+        if reportIdExist is None:
+            print("no existe en categories", r['category_id'])
+        else:
+            # print("el id coincidió ", reportIdExist['category_id'])
+    
+            if 'category_description' in reportIdExist:
+                reportsColl.update_one({'category_id': reportIdExist['category_id'] },{"$set": {
+                        "category_name":reportIdExist['category_name'],                 
+                        "category_description":reportIdExist['category_description'],
+                        "vertical_name":reportIdExist['vertical_name'],
+                        "data_type":reportIdExist['data_type'],
+                        "path_array":reportIdExist['path_array']
+                        }}, upsert=False)
+                print("actualizo a reports con descripcion", reportIdExist['category_id'])
+            else:
+                reportsColl.update_one({'category_id': reportIdExist['category_id'] },{"$set": {
+                    
+                        "category_name":reportIdExist['category_name'],
+                        "vertical_name":reportIdExist['vertical_name'],
+                        "data_type":reportIdExist['data_type'],
+                        "path_array":reportIdExist['path_array']
+                        }}, upsert=False)
+                print("actualizo a reports sin descripcion", reportIdExist['category_id'])
+            
+            # elif categoryNameInR is not None: 
+        # else:
+        #     print("ya existe -->", categoryNameExistInR)
+    
+    #     reportId = reportsColl.find_one({"category_id": r['category_id']})
+    # # if r()
+    #     #si la fecha de modificacion de la audiencia es reciente y ya existe el id de la audiencia
+    #     if mydb.reports.count_documents({ 'audienceId': str(a['id']) }, limit = 1) and date_audience < now3 : 
+    #                 print("ya existe el id y la fecha " + date_audience.strftime('%Y-%m-%dT%H:%M:%S+%f')+ " esta cerca a " + now3.strftime('%Y-%m-%dT%H:%M:%S+%f')) 
+        
+    #     #si no existe audience id va a insertar datos iniciales
+    #     elif mydb.reports.count_documents({ 'audienceId': str(a['id']) }, limit = 1) == 0 :
+    #                     reportsColl.insert_one({
+    #                             'audienceId': str(a['id']),
+    #                             'clientId': partner_id,
+    #                             'audienceName': a['name'],
+    #                             # 'audienceCreationDate': dateAudienceCreate,
+    #                             # 'audienceModifiedDate': date_audience,
+    #                             # 'audienceCountryCodes': a['countryCodes'],
+    #                             # 'audienceDeviceType': a['device_type'],
+    #                             # 'clientId': partner_id,
+    #                             # "recency" : a['recency'],
+    #                             # 'typePlatform': 3,
+    #                             # 'namePlatform': 'bluekai',
+    #                             # 'segment':'',
+    #                             # 'discovery':''
+    #                     })
+    #                     print("inserta reports", str(a['id']))
+    #     #si existe id de audiencia y el date de modificacion esta lejos
+    #     elif mydb.reports.count_documents({ 'audienceId': a['id'] }, limit = 1) and date_audience > now3 :
+        
+    #                     reportsColl.insert_one({
+    #                             'audienceId': str(a['id']),
+    #                             'clientId': partner_id,
+    #                             'audienceName': a['name'],
+    #                             # 'audienceCreationDate': dateAudienceCreate,
+    #                             # 'audienceModifiedDate': date_audience,
+    #                             # 'audienceCountryCodes': a['countryCodes'],
+    #                             # 'audienceDeviceType': a['device_type'],
+    #                             # 'clientId': partner_id,
+    #                             # "recency" : a['recency'],
+    #                             # 'typePlatform': 3,
+    #                             # 'namePlatform': 'bluekai',
+    #                             # 'segment':'', 
+    #                             # 'discovery':''                        
+    #                     })
+    #                     print("actualiza reports", a['id']) 
+
+    #     cont = 1

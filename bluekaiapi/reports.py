@@ -8,8 +8,6 @@ categoriesColl = mydb["categories"]
 resultCategory = categoriesColl.find()
 resultReport = reportsColl.find()
 
-i=0
-
 # for match in reportsColl.find({ "discovery.0.category_id" : { "$in" : [123] } }):
 #     print(match)
 for r in resultReport:
@@ -42,6 +40,4 @@ for r in resultReport:
                         "discovery.$.path_array":reportIdExist['path_array']
                         }}, upsert=False)
                 print("actualizo a reports sin descripcion", reportIdExist['category_id'])
-    print(i)
-    i= i+1
 
