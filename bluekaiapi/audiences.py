@@ -42,6 +42,7 @@ audience_id = []
 category = []
 # categorieDiscmongo = []
 categorieInsert = []
+
 # if NODE_ENV == 'production' :
 #         myclient = pymongo.MongoClient('mongodb+srv://'+ DB_USER +':'+ DB_PASSWORD +'@audiencekit1-76o4f.mongodb.net/audienceKit?retryWrites=true&w=majority')
 #         mydb = myclient["bluekaiconnector"]
@@ -151,11 +152,14 @@ for a in audiences:
         
         d = AUD.DiscoveryAudience(partner_id, str(aud_id), bkuid, bksecretkey, reach)
         discovery = d;
-        json_formatted_str = json.dumps(discovery, indent=2)
-        print("DISCOVERY--->",json_formatted_str)
+        # json_formatted_str = json.dumps(discovery, indent=2)
+        # print("DISCOVERY--->",json_formatted_str)
         # print("discovery---->",discovery)
         #verifica si hay alguna fecha nueva para discoverys
-        report_date = reportsColl.find_one({"date": discovery['date']})
+        global report_date
+ 
+        report_date = discovery['date']
+        print("report_date",report_date)
         # json_formatted_str = json.dumps(a, indent=2)
         # print("audiencias--->",json_formatted_str)
  
@@ -185,7 +189,7 @@ for a in audiences:
                         'base_segment_size_filtered': base_segment_size_filtered,
                         'internal_leftCI': internal_leftCI,
                         'internal_rightCI': internal_rightCI,
-                        'internal_CL ': internal_CL     
+                        'internal_CL': internal_CL     
                 })
                 print("inserta datos iniciales", category_id)
 
@@ -240,9 +244,9 @@ for a in audiences:
                                 'base_segment_size_filtered': base_segment_size_filtered,
                                 'internal_leftCI': internal_leftCI,
                                 'internal_rightCI': internal_rightCI,
-                                'internal_CL ': internal_CL     
+                                'internal_CL': internal_CL     
                         })
-                        print("inserta reports para nuevo category id", category_id)
+                        print("inserta nuevo document_report por nuevo category id", category_id)
                         
                         # reportsColl.update_one({'_id': categoryIdInR['_id'] },{"$set": {
                         #                     'base_segment_size_unfiltered': discovery['totalsegment1Size'],
@@ -285,7 +289,7 @@ for a in audiences:
                         'base_segment_size_filtered': base_segment_size_filtered,
                         'internal_leftCI': internal_leftCI,
                         'internal_rightCI': internal_rightCI,
-                        'internal_CL ': internal_CL     
+                        'internal_CL': internal_CL     
                 })
                 print("inserta reports con nueva fecha", a['id'])
 
@@ -343,84 +347,67 @@ for a in audiences:
 
     resultReport = reportsColl.find()
 #inyecta en reports datos de categorias
-    
 
     for r in resultReport:
-        # print(match)
-        # print(match['category_id'])
-        # revisa en categories si existe el id de category
-        reportIdExist = categoriesColl.find_one({"category_id": r['category_id']})
-        print(reportIdExist)
-        if reportIdExist is None:
-            print("no existe en categories", r['category_id'])
-        else:
-            # print("el id coincidió ", reportIdExist['category_id'])
-    
-            if 'category_description' in reportIdExist:
-                reportsColl.update_one({'category_id': reportIdExist['category_id'] },{"$set": {
-                        "category_name":reportIdExist['category_name'],                 
-                        "category_description":reportIdExist['category_description'],
-                        "vertical_name":reportIdExist['vertical_name'],
-                        "data_type":reportIdExist['data_type'],
-                        "path_array":reportIdExist['path_array']
-                        }}, upsert=False)
-                print("actualizo a reports con descripcion", reportIdExist['category_id'])
-            else:
-                reportsColl.update_one({'category_id': reportIdExist['category_id'] },{"$set": {
-                    
-                        "category_name":reportIdExist['category_name'],
-                        "vertical_name":reportIdExist['vertical_name'],
-                        "data_type":reportIdExist['data_type'],
-                        "path_array":reportIdExist['path_array']
-                        }}, upsert=False)
-                print("actualizo a reports sin descripcion", reportIdExist['category_id'])
-            
-            # elif categoryNameInR is not None: 
-        # else:
-        #     print("ya existe -->", categoryNameExistInR)
-    
-    #     reportId = reportsColl.find_one({"category_id": r['category_id']})
-    # # if r()
-    #     #si la fecha de modificacion de la audiencia es reciente y ya existe el id de la audiencia
-    #     if mydb.reports.count_documents({ 'audienceId': str(a['id']) }, limit = 1) and date_audience < now3 : 
-    #                 print("ya existe el id y la fecha " + date_audience.strftime('%Y-%m-%dT%H:%M:%S+%f')+ " esta cerca a " + now3.strftime('%Y-%m-%dT%H:%M:%S+%f')) 
-        
-    #     #si no existe audience id va a insertar datos iniciales
-    #     elif mydb.reports.count_documents({ 'audienceId': str(a['id']) }, limit = 1) == 0 :
-    #                     reportsColl.insert_one({
-    #                             'audienceId': str(a['id']),
-    #                             'clientId': partner_id,
-    #                             'audienceName': a['name'],
-    #                             # 'audienceCreationDate': dateAudienceCreate,
-    #                             # 'audienceModifiedDate': date_audience,
-    #                             # 'audienceCountryCodes': a['countryCodes'],
-    #                             # 'audienceDeviceType': a['device_type'],
-    #                             # 'clientId': partner_id,
-    #                             # "recency" : a['recency'],
-    #                             # 'typePlatform': 3,
-    #                             # 'namePlatform': 'bluekai',
-    #                             # 'segment':'',
-    #                             # 'discovery':''
-    #                     })
-    #                     print("inserta reports", str(a['id']))
-    #     #si existe id de audiencia y el date de modificacion esta lejos
-    #     elif mydb.reports.count_documents({ 'audienceId': a['id'] }, limit = 1) and date_audience > now3 :
-        
-    #                     reportsColl.insert_one({
-    #                             'audienceId': str(a['id']),
-    #                             'clientId': partner_id,
-    #                             'audienceName': a['name'],
-    #                             # 'audienceCreationDate': dateAudienceCreate,
-    #                             # 'audienceModifiedDate': date_audience,
-    #                             # 'audienceCountryCodes': a['countryCodes'],
-    #                             # 'audienceDeviceType': a['device_type'],
-    #                             # 'clientId': partner_id,
-    #                             # "recency" : a['recency'],
-    #                             # 'typePlatform': 3,
-    #                             # 'namePlatform': 'bluekai',
-    #                             # 'segment':'', 
-    #                             # 'discovery':''                        
-    #                     })
-    #                     print("actualiza reports", a['id']) 
 
-    #     cont = 1
+#tiene que verificar para el date de discovery
+        report_date2 = reportsColl.find_one({"date": r['date']})
+        print("report_date", report_date)
+        print("report_date2", report_date2['date'])
+        if report_date == report_date2 or report_date is not None:
+        
+            if 'category_name' not in r:      
+# si no hay category name no ha escrito esta parte         
+                # print(match)
+                # print(match['category_id'])
+                # revisa en categories si existe el id de category
+                reportIdExist = categoriesColl.find_one({"category_id": r['category_id']})
+                # print(reportIdExist)
+
+    # comprueba si el category_id esta en el catalogo de categories
+                if reportIdExist is None:
+                    print("no existe en categories", r['category_id'])
+                else:
+                    # print("el id coincidió ", reportIdExist['category_id'])
+                    # print("names path -->",reportIdExist['path_array']['names'])
+
+                        namesPath = ''
+                        l=len(reportIdExist['path_array']['names'])-1 
+                        # print("namesindex --> ", l)
+                        i=0
+                        for value in reportIdExist['path_array']['names']:
+                            # print("i-->",i)
+            #compara index para quitar la flecha y quita root
+                            if l==i:
+                                if value != 'ROOT':
+                                # print("path---->",value)
+                                    namesPath+=value
+                            else:
+                                if value != 'ROOT':
+                                    # print("path---->",value)
+                                    namesPath+=value+" -> "
+                            i= i+1
+                        # print("namespath -->",namesPath)
+                        if 'category_description' in reportIdExist:
+                            reportsColl.update_one({'category_id': reportIdExist['category_id'] },{"$set": {
+                                    "category_name":reportIdExist['category_name'],                 
+                                    "category_description":reportIdExist['category_description'],
+                                    "vertical_name":reportIdExist['vertical_name'],
+                                    "data_type":reportIdExist['data_type'],
+                                    "path_array":namesPath
+                                    }}, upsert=False)
+                            print("actualizo a reports con descripcion", reportIdExist['category_id'])
+                        else:
+                            reportsColl.update_one({'category_id': reportIdExist['category_id'] },{"$set": {
+                                
+                                    "category_name":reportIdExist['category_name'],
+                                    "vertical_name":reportIdExist['vertical_name'],
+                                    "data_type":reportIdExist['data_type'],
+                                    "path_array":namesPath
+                                    }}, upsert=False)
+                            print("actualizo a reports sin descripcion", reportIdExist['category_id'])
+
+            else:
+                print("ya existe category_name en mongo no es necesario actualizar")
+        else: 
+            print("no hay fecha que coincida o es nula")
