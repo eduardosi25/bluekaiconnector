@@ -1,4 +1,4 @@
-# bluekai-connector
+# bluekai-connector-python
 for bluekai connector project. Created with python
 
 ## Development

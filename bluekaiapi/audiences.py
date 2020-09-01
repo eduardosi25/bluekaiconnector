@@ -92,7 +92,7 @@ for a in audiences:
                             'reach':''
                     })
                     print("inserta audiencias de", a['id'])
-    elif mydb.audiences.count_documents({ 'audienceId': a['id'] }, limit = 1) and date_audience > now3 :
+    elif mydb.audiences.count_documents({ 'audienceId': str(a['id']) }, limit = 1) and date_audience > now3 :
     
                     audienceColl.insert_one({
                             'audienceId': str(a['id']),
@@ -184,7 +184,7 @@ for a in audiences:
                         'base_segment_size_unfiltered': discovery['totalsegment1Size'],
                         'odc_universe_reach': discovery['totalbackgroundSegmentSize'],
                         'date': dateutil.parser.parse(discovery['date']),
-                        'category_id': category_id,
+                        'category_id': str(category_id),
                         'second_segment_reach': second_segment_reach,
                         'category_index': category_index,
                         'base_segment_size_filtered': base_segment_size_filtered,
@@ -201,7 +201,7 @@ for a in audiences:
             # print("si hay date cerca")             
                     #arma el contenido de categoriesids en reports
             for categoriesDisc in discovery['Audiences']['1']:
-                categoryIdInR = reportsColl.find_one({"category_id": categoriesDisc['categoryId']})
+                categoryIdInR = reportsColl.find_one({"category_id": str(categoriesDisc['categoryId'])})
 
                 category_id = categoriesDisc['categoryId']
                 second_segment_reach = categoriesDisc['backgroundSegmentSize']
@@ -239,7 +239,7 @@ for a in audiences:
                                 'base_segment_size_unfiltered': discovery['totalsegment1Size'],
                                 'odc_universe_reach': discovery['totalbackgroundSegmentSize'],
                                 'date': dateutil.parser.parse(discovery['date']),
-                                'category_id': category_id,
+                                'category_id': str(category_id),
                                 'second_segment_reach': second_segment_reach,
                                 'category_index': category_index,
                                 'base_segment_size_filtered': base_segment_size_filtered,
@@ -284,7 +284,7 @@ for a in audiences:
                         'base_segment_size_unfiltered': discovery['totalsegment1Size'],
                         'odc_universe_reach': discovery['totalbackgroundSegmentSize'],
                         'date': dateutil.parser.parse(discovery['date']),
-                        'category_id': category_id,
+                        'category_id': str(category_id),
                         'second_segment_reach': second_segment_reach,
                         'category_index': category_index,
                         'base_segment_size_filtered': base_segment_size_filtered,
@@ -292,7 +292,7 @@ for a in audiences:
                         'internal_rightCI': internal_rightCI,
                         'internal_CL': internal_CL     
                 })
-                print("inserta reports con nueva fecha", a['id'])
+                print("inserta reports con nueva fecha", str(a['id']))
 
 
 #inyecta en categories
@@ -303,7 +303,7 @@ for a in audiences:
     # print("categories------->",categorieDB)
     
     for categorieItem in categorieDB:
-            categoryIdExist = categoriesColl.find_one({"category_id": categorieItem['id']})
+            categoryIdExist = categoriesColl.find_one({"category_id": str(categorieItem['id'])})
             
             # description =  'description' in categorieItem
             # print(description)
@@ -313,31 +313,31 @@ for a in audiences:
 
                 if categoryIdExist is None:
                     categoriesColl.insert_one({
-                    "category_id":categorieItem['id'],
+                    "category_id":str(categorieItem['id']),
                     "category_name":categorieItem['name'],
                     "category_description":categorieItem['description'],
-                    "partner_id":categorieItem['partner']['id'],
+                    "partner_id":str(categorieItem['partner']['id']),
                     "vertical_name":categorieItem['vertical']['name'],
                     "data_type":categorieItem['ownershipType'],
-                    "path_array":categorieItem['pathFromRoot']
+                    "category_path":categorieItem['pathFromRoot']
                     })
-                #     print("insertando", categorieItem['name'])                       
-                # else:
-                #     print("ya existe id", categorieItem['id'])
+                    print("insertando", categorieItem['name'])                       
+                else:
+                    print("ya existe id", categorieItem['id'])
             else:
                 if categoryIdExist is None:
                     
                     categoriesColl.insert_one({
-                    "category_id":categorieItem['id'],
+                    "category_id":str(categorieItem['id']),
                     "category_name":categorieItem['name'],
-                    "partner_id":categorieItem['partner']['id'],
+                    "partner_id":str(categorieItem['partner']['id']),
                     "vertical_name":categorieItem['vertical']['name'],
                     "data_type":categorieItem['ownershipType'],
-                    "path_array":categorieItem['pathFromRoot']
+                    "category_path":categorieItem['pathFromRoot']
                     })
-                #     print("insertando sin descripcion", categorieItem['name'])                       
-                # else:
-                #     print("ya existe id sin descripcion", categorieItem['id'])
+                    print("insertando sin descripcion", categorieItem['name'])                       
+                else:
+                    print("ya existe id sin descripcion", categorieItem['id'])
 
 
 
@@ -373,10 +373,10 @@ for a in audiences:
                     # print("names path -->",reportIdExist['path_array']['names'])
 
                         namesPath = ''
-                        l=len(reportIdExist['path_array']['names'])-1 
+                        l=len(reportIdExist['category_path']['names'])-1 
                         # print("namesindex --> ", l)
                         i=0
-                        for value in reportIdExist['path_array']['names']:
+                        for value in reportIdExist['category_path']['names']:
                             # print("i-->",i)
             #compara index para quitar la flecha y quita root
                             if l==i:
@@ -395,7 +395,7 @@ for a in audiences:
                                     "category_description":reportIdExist['category_description'],
                                     "vertical_name":reportIdExist['vertical_name'],
                                     "data_type":reportIdExist['data_type'],
-                                    "path_array":namesPath
+                                    "category_path":namesPath
                                     }}, upsert=False)
                             print("actualizo a reports con descripcion", reportIdExist['category_id'])
                         else:
@@ -404,7 +404,7 @@ for a in audiences:
                                     "category_name":reportIdExist['category_name'],
                                     "vertical_name":reportIdExist['vertical_name'],
                                     "data_type":reportIdExist['data_type'],
-                                    "path_array":namesPath
+                                    "category_path":namesPath
                                     }}, upsert=False)
                             print("actualizo a reports sin descripcion", reportIdExist['category_id'])
 
