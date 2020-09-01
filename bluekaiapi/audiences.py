@@ -298,46 +298,46 @@ for a in audiences:
 #inyecta en categories
 
 
-    # c = AUD.CategoryAudience(partner_id, bkuid, bksecretkey)
-    # categorieDB = c['items']
-    # # print("categories------->",categorieDB)
+    c = AUD.CategoryAudience(partner_id, bkuid, bksecretkey)
+    categorieDB = c['items']
+    # print("categories------->",categorieDB)
     
-    # for categorieItem in categorieDB:
-    #         categoryIdExist = categoriesColl.find_one({"category_id": categorieItem['id']})
+    for categorieItem in categorieDB:
+            categoryIdExist = categoriesColl.find_one({"category_id": categorieItem['id']})
             
-    #         # description =  'description' in categorieItem
-    #         # print(description)
-    #         # description1 =  categorieItem['description'] in categorieItem
-    #         # print(description1)
-    #         if 'description' in categorieItem:
+            # description =  'description' in categorieItem
+            # print(description)
+            # description1 =  categorieItem['description'] in categorieItem
+            # print(description1)
+            if 'description' in categorieItem:
 
-    #             if categoryIdExist is None:
-    #                 categoriesColl.insert_one({
-    #                 "category_id":categorieItem['id'],
-    #                 "category_name":categorieItem['name'],
-    #                 "category_description":categorieItem['description'],
-    #                 "partner_id":categorieItem['partner']['id'],
-    #                 "vertical_name":categorieItem['vertical']['name'],
-    #                 "data_type":categorieItem['ownershipType'],
-    #                 "path_array":categorieItem['pathFromRoot']
-    #                 })
-    #             #     print("insertando", categorieItem['name'])                       
-    #             # else:
-    #             #     print("ya existe id", categorieItem['id'])
-    #         else:
-    #             if categoryIdExist is None:
+                if categoryIdExist is None:
+                    categoriesColl.insert_one({
+                    "category_id":categorieItem['id'],
+                    "category_name":categorieItem['name'],
+                    "category_description":categorieItem['description'],
+                    "partner_id":categorieItem['partner']['id'],
+                    "vertical_name":categorieItem['vertical']['name'],
+                    "data_type":categorieItem['ownershipType'],
+                    "path_array":categorieItem['pathFromRoot']
+                    })
+                #     print("insertando", categorieItem['name'])                       
+                # else:
+                #     print("ya existe id", categorieItem['id'])
+            else:
+                if categoryIdExist is None:
                     
-    #                 categoriesColl.insert_one({
-    #                 "category_id":categorieItem['id'],
-    #                 "category_name":categorieItem['name'],
-    #                 "partner_id":categorieItem['partner']['id'],
-    #                 "vertical_name":categorieItem['vertical']['name'],
-    #                 "data_type":categorieItem['ownershipType'],
-    #                 "path_array":categorieItem['pathFromRoot']
-    #                 })
-    #             #     print("insertando sin descripcion", categorieItem['name'])                       
-    #             # else:
-    #             #     print("ya existe id sin descripcion", categorieItem['id'])
+                    categoriesColl.insert_one({
+                    "category_id":categorieItem['id'],
+                    "category_name":categorieItem['name'],
+                    "partner_id":categorieItem['partner']['id'],
+                    "vertical_name":categorieItem['vertical']['name'],
+                    "data_type":categorieItem['ownershipType'],
+                    "path_array":categorieItem['pathFromRoot']
+                    })
+                #     print("insertando sin descripcion", categorieItem['name'])                       
+                # else:
+                #     print("ya existe id sin descripcion", categorieItem['id'])
 
 
 
