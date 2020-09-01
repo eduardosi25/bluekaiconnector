@@ -12,6 +12,7 @@ import urllib
 import json
 import sys
 import time
+import dateutil
 parser = ConfigParser()
 parser.read('config.cfg')
 DB_USER = parser.get('DB', 'DB_USER')
@@ -182,7 +183,7 @@ for a in audiences:
                         'audienceName': a['name'],
                         'base_segment_size_unfiltered': discovery['totalsegment1Size'],
                         'odc_universe_reach': discovery['totalbackgroundSegmentSize'],
-                        'date': discovery['date'],
+                        'date': dateutil.parser.parse(discovery['date']),
                         'category_id': category_id,
                         'second_segment_reach': second_segment_reach,
                         'category_index': category_index,
@@ -237,7 +238,7 @@ for a in audiences:
                                 'audienceName': a['name'],
                                 'base_segment_size_unfiltered': discovery['totalsegment1Size'],
                                 'odc_universe_reach': discovery['totalbackgroundSegmentSize'],
-                                'date': discovery['date'],
+                                'date': dateutil.parser.parse(discovery['date']),
                                 'category_id': category_id,
                                 'second_segment_reach': second_segment_reach,
                                 'category_index': category_index,
@@ -282,7 +283,7 @@ for a in audiences:
                         'audienceName': a['name'],
                         'base_segment_size_unfiltered': discovery['totalsegment1Size'],
                         'odc_universe_reach': discovery['totalbackgroundSegmentSize'],
-                        'date': discovery['date'],
+                        'date': dateutil.parser.parse(discovery['date']),
                         'category_id': category_id,
                         'second_segment_reach': second_segment_reach,
                         'category_index': category_index,
